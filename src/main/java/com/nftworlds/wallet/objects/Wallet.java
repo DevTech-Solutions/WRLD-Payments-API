@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
+import org.json.HTTP;
 import org.json.JSONObject;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -146,6 +148,21 @@ public class Wallet {
     }
 
     /**
+     * Alternative API for NFT fetching that seems to provide better data than Alchemy.
+     * Returns NFTs on both Polygon and Ethereum chains.
+     */
+    public JSONObject getOwnedNFTsByContactWithSimpleHash(String contractAddress) throws URISyntaxException, IOException, InterruptedException {
+        String url =
+                "https://api.simplehash.com/api/v0/nfts/owners?chains=polygon,ethereum&wallet_addresses=" + address +
+                        "&contract_addresses=" + contractAddress;
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(url)).header("X-API-KEY", "worldql_sk_ssga6syqc1eo5eyn")
+                .build();
+        return new JSONObject(client.send(request, HttpResponse.BodyHandlers.ofString()).body());
+    }
+
+    /**
      * Get a list of all the account's owned NFTs. Does not return metadata.
      * This is a blocking call, do not run in main thread.
      */
@@ -182,17 +199,17 @@ public class Wallet {
         ERC721 erc721 = null;
         if (network.equals(Network.ETHEREUM)) {
             erc721 = ERC721.load(
-                contractAddress,
-                NFTWorlds.getInstance().getEthereumRPC().getEthereumWeb3j(),
-                Credentials.create(NFTWorlds.getInstance().getNftConfig().getServerPrivateKey()),
-                new DefaultGasProvider()
+                    contractAddress,
+                    NFTWorlds.getInstance().getEthereumRPC().getEthereumWeb3j(),
+                    Credentials.create(NFTWorlds.getInstance().getNftConfig().getServerPrivateKey()),
+                    new DefaultGasProvider()
             );
         } else if (network.equals(Network.POLYGON)) {
             erc721 = ERC721.load(
-                contractAddress,
-                NFTWorlds.getInstance().getPolygonRPC().getPolygonWeb3j(),
-                Credentials.create(NFTWorlds.getInstance().getNftConfig().getServerPrivateKey()),
-                new DefaultGasProvider()
+                    contractAddress,
+                    NFTWorlds.getInstance().getPolygonRPC().getPolygonWeb3j(),
+                    Credentials.create(NFTWorlds.getInstance().getNftConfig().getServerPrivateKey()),
+                    new DefaultGasProvider()
             );
         } else {
             return false;
@@ -308,6 +325,7 @@ public class Wallet {
             }
         } else {
             try {
+                NFTWorlds.getInstance().getLogger().info("Sending outgoing transaction using PK to " + paidPlayer + " for " + amount);
                 final PolygonWRLDToken polygonWRLDTokenContract = NFTWorlds.getInstance().getWrld().getPolygonWRLDTokenContract();
                 polygonWRLDTokenContract.transfer(this.getAddress(), sending.toBigInteger()).sendAsync().thenAccept((c) -> {
                     final String receiptLink = "https://polygonscan.com/tx/" + c.getTransactionHash();
@@ -318,6 +336,9 @@ public class Wallet {
                         paidPlayer.sendMessage(ColorUtil.rgb(
                                 MessageFormat.format(NFTWorlds.getInstance().getLangConfig().getPaid(), reason, receiptLink)));
                     }
+                }).exceptionally(error -> {
+                    NFTWorlds.getInstance().getLogger().warning("Caught error in transfer function exceptionally: " + error);
+                    return null;
                 });
             } catch (Exception e) {
                 NFTWorlds.getInstance().getLogger().warning("caught error in payWrld:");
