@@ -12,13 +12,14 @@ import org.web3j.abi.datatypes.generated.Uint256;
 public class PeerToPeerPayEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private Player to;
-    private Player from;
-    private double amount;
-    private String reason;
-    private Uint256 refID;
+    private final Player to;
+    private final Player from;
+    private final double amount;
+    private final String reason;
+    private final Uint256 refID;
 
-    public PeerToPeerPayEvent(@NotNull final Player to, @NotNull final Player from, @NotNull final double amount, @NotNull final String reason, @NotNull final Uint256 refID) {
+    public PeerToPeerPayEvent(@NotNull Player to, @NotNull Player from, double amount,
+                              @NotNull String reason, @NotNull Uint256 refID) {
         this.to = to;
         this.from = from;
         this.amount = amount;

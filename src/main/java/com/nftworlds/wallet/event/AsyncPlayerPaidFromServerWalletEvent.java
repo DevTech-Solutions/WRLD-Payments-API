@@ -22,7 +22,8 @@ public class AsyncPlayerPaidFromServerWalletEvent extends Event {
     @Setter
     private boolean defaultReceiveMessage;
 
-    public AsyncPlayerPaidFromServerWalletEvent(Player receiver, double amount, Network network, String reason, String receiptLink) {
+    public AsyncPlayerPaidFromServerWalletEvent(@NotNull Player receiver, double amount, @NotNull Network network,
+                                                @NotNull String reason, @NotNull String receiptLink) {
         super(true);
         this.receiver = receiver;
         this.amount = amount;

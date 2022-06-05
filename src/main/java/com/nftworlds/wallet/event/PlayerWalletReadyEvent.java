@@ -12,7 +12,7 @@ public class PlayerWalletReadyEvent extends PlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public PlayerWalletReadyEvent(@NotNull final Player player) {
+    public PlayerWalletReadyEvent(@NotNull Player player) {
         super(player);
     }
 
@@ -21,8 +21,7 @@ public class PlayerWalletReadyEvent extends PlayerEvent {
         return handlers;
     }
 
-    @NotNull
-    public static HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return handlers;
     }
 }

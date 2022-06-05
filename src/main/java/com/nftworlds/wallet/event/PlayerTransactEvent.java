@@ -12,12 +12,13 @@ import org.web3j.abi.datatypes.generated.Uint256;
 public class PlayerTransactEvent<T> extends PlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    private double amount;
-    private String reason;
-    private Uint256 refID;
-    private T payload;
+    private final double amount;
+    private final String reason;
+    private final Uint256 refID;
+    private final T payload;
 
-    public PlayerTransactEvent(@NotNull final Player player, final double amount, @NotNull final String reason, @NotNull final Uint256 refID, @NotNull final T payload) {
+    public PlayerTransactEvent(@NotNull Player player, double amount, @NotNull String reason,
+                               @NotNull Uint256 refID, @NotNull T payload) {
         super(player);
         this.amount = amount;
         this.reason = reason;
@@ -30,7 +31,6 @@ public class PlayerTransactEvent<T> extends PlayerEvent {
      *
      * @return Amount of $WRLD
      */
-    @NotNull
     public double getAmount() {
         return amount;
     }
@@ -40,7 +40,6 @@ public class PlayerTransactEvent<T> extends PlayerEvent {
      *
      * @return Amount of $WRLD
      */
-    @NotNull
     public double getWRLD() {
         return amount;
     }
@@ -50,8 +49,7 @@ public class PlayerTransactEvent<T> extends PlayerEvent {
      *
      * @return Transaction Reason
      */
-    @NotNull
-    public String getReason() {
+    public @NotNull String getReason() {
         return reason;
     }
 
@@ -60,25 +58,20 @@ public class PlayerTransactEvent<T> extends PlayerEvent {
      *
      * @return Payment reference ID
      */
-    @NotNull
-    public Uint256 getRefID() {
+    public @NotNull Uint256 getRefID() {
         return refID;
     }
 
-    @NotNull
-    public T getPayload() {
+    public @NotNull T getPayload() {
         return payload;
     }
 
-    @NotNull
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
-
-    @NotNull
-    public static HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return handlers;
     }
 }
