@@ -2,12 +2,10 @@ package com.nftworlds.wallet.config;
 
 import com.nftworlds.wallet.NFTWorlds;
 import lombok.Getter;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 
 @Getter
 public class LangConfig {

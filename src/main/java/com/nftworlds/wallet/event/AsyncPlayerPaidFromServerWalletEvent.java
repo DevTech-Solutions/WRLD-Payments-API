@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 @Getter
 public class AsyncPlayerPaidFromServerWalletEvent extends Event {

@@ -1,7 +1,6 @@
 package com.nftworlds.wallet.commands;
 
 import com.nftworlds.wallet.menus.WalletGUI;
-import com.nftworlds.wallet.objects.payments.PaymentRequest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

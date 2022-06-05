@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
-import org.web3j.abi.datatypes.generated.Uint256;
 
 /**
  * Holds information for player transaction events
