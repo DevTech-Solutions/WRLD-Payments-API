@@ -26,11 +26,24 @@ public class BalanceItem extends MenuItem {
         super(DISPLAY_NAME, ICON);
     }
 
+    /**
+     * When the user clicks on an item in the list,
+     * we want to show the details of that item
+     *
+     * @param event The event that was triggered.
+     */
     @Override
     public void onItemClick(ItemClickEvent event) {
 
     }
 
+    /**
+     * Get the final icon for the player,
+     * and add the player's balance to the lore.
+     *
+     * @param player The player who is viewing the menu
+     * @return The final icon of the item.
+     */
     @Override
     public ItemStack getFinalIcon(Player player) {
         ItemStack finalIcon = super.getFinalIcon(player);
