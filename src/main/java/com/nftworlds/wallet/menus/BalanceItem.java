@@ -3,6 +3,7 @@ package com.nftworlds.wallet.menus;
 import com.nftworlds.wallet.objects.NFTPlayer;
 import com.nftworlds.wallet.util.ColorUtil;
 import com.nftworlds.wallet.util.NumberUtil;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import ninja.amp.ampmenus.events.ItemClickEvent;
 import ninja.amp.ampmenus.items.MenuItem;
@@ -36,8 +37,10 @@ public class BalanceItem extends MenuItem {
         try {
             double balance = NFTPlayer.getByUUID(player.getUniqueId()).getPrimaryWallet().getPolygonWRLDBalance();
             ItemMeta meta = finalIcon.getItemMeta();
-            List<String> lore = List.of(ColorUtil.rgb(AQUA.toString() + NumberUtil.round(balance, 3) + " $WRLD"));
-            meta.setLore(lore);
+            List<Component> lore = List.of(
+                    Component.text(ColorUtil.rgb(AQUA.toString() + NumberUtil.round(balance, 3) + " $WRLD"))
+            );
+            meta.lore(lore);
             finalIcon.setItemMeta(meta);
         } catch (Exception e) {
             e.printStackTrace();
