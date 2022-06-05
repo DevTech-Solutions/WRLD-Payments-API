@@ -28,6 +28,7 @@ import java.util.List;
  * Auto-generated with web3j version 4.1.1
  */
 
+@SuppressWarnings("unused")
 public class ERC20 extends Contract {
     private static final String BINARY = "Bin file was not provided";
 
@@ -50,12 +51,10 @@ public class ERC20 extends Contract {
     public static final String FUNC_ALLOWANCE = "allowance";
 
     public static final Event TRANSFER_EVENT = new Event("Transfer",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
-    ;
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
 
     public static final Event APPROVAL_EVENT = new Event("Approval",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
-    ;
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
 
     @Deprecated
     protected ERC20(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -77,78 +76,84 @@ public class ERC20 extends Contract {
 
     public RemoteCall<String> name() {
         final Function function = new Function(FUNC_NAME,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
         final Function function = new Function(
                 FUNC_APPROVE,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_spender),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_spender),
                 new org.web3j.abi.datatypes.generated.Uint256(_value)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> totalSupply() {
         final Function function = new Function(FUNC_TOTALSUPPLY,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> transferFrom(String _from, String _to, BigInteger _value) {
         final Function function = new Function(
                 FUNC_TRANSFERFROM,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_from),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_from),
                 new org.web3j.abi.datatypes.Address(_to),
                 new org.web3j.abi.datatypes.generated.Uint256(_value)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> decimals() {
         final Function function = new Function(FUNC_DECIMALS,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}));
+                List.of(),
+                List.of(new TypeReference<Uint8>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> balanceOf(String _owner) {
         final Function function = new Function(FUNC_BALANCEOF,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                List.of(new Address(_owner)),
+                List.of(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<String> symbol() {
         final Function function = new Function(FUNC_SYMBOL,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> transfer(String _to, BigInteger _value) {
         final Function function = new Function(
                 FUNC_TRANSFER,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_to),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_to),
                 new org.web3j.abi.datatypes.generated.Uint256(_value)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> allowance(String _owner, String _spender) {
         final Function function = new Function(FUNC_ALLOWANCE,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_owner),
                 new org.web3j.abi.datatypes.Address(_spender)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                List.of(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
-        ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
+        ArrayList<TransferEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -161,17 +166,14 @@ public class ERC20 extends Contract {
     }
 
     public Flowable<TransferEventResponse> transferEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TransferEventResponse>() {
-            @Override
-            public TransferEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
-                TransferEventResponse typedResponse = new TransferEventResponse();
-                typedResponse.log = log;
-                typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse._to = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse._value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+            TransferEventResponse typedResponse = new TransferEventResponse();
+            typedResponse.log = log;
+            typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse._to = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse._value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+            return typedResponse;
         });
     }
 
@@ -183,7 +185,7 @@ public class ERC20 extends Contract {
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
-        ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
+        ArrayList<ApprovalEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -196,17 +198,14 @@ public class ERC20 extends Contract {
     }
 
     public Flowable<ApprovalEventResponse> approvalEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, ApprovalEventResponse>() {
-            @Override
-            public ApprovalEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
-                ApprovalEventResponse typedResponse = new ApprovalEventResponse();
-                typedResponse.log = log;
-                typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse._spender = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse._value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+            ApprovalEventResponse typedResponse = new ApprovalEventResponse();
+            typedResponse.log = log;
+            typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse._spender = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse._value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+            return typedResponse;
         });
     }
 

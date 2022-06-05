@@ -2,7 +2,6 @@ package com.nftworlds.wallet.contracts.wrappers.common;
 
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -13,6 +12,7 @@ import org.web3j.tx.gas.ContractGasProvider;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Standard contract wrapper for ERC721 contract interactions on any chain.
@@ -21,6 +21,7 @@ import java.util.Arrays;
  * Auto-generated with web3j version 4.1.1
  */
 
+@SuppressWarnings("unused")
 public class ERC721Enumerable extends Contract {
     private static final String BINARY = "Bin file was not provided";
 
@@ -50,23 +51,26 @@ public class ERC721Enumerable extends Contract {
 
     public RemoteCall<BigInteger> totalSupply() {
         final Function function = new Function(FUNC_TOTALSUPPLY,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> tokenOfOwnerByIndex(String _owner, BigInteger _index) {
         final Function function = new Function(FUNC_TOKENOFOWNERBYINDEX,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_owner),
                 new org.web3j.abi.datatypes.generated.Uint256(_index)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                List.of(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> tokenByIndex(BigInteger _index) {
         final Function function = new Function(FUNC_TOKENBYINDEX,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_index)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                List.of(new Uint256(_index)),
+                List.of(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 

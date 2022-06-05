@@ -2,8 +2,8 @@ package com.nftworlds.wallet.contracts.wrappers.common;
 
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
@@ -12,7 +12,7 @@ import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Standard contract wrapper for ERC721 contract interactions on any chain.
@@ -21,6 +21,7 @@ import java.util.Arrays;
  * Auto-generated with web3j version 4.1.1
  */
 
+@SuppressWarnings("unused")
 public class ERC721Metadata extends Contract {
     private static final String BINARY = "Bin file was not provided";
 
@@ -50,22 +51,25 @@ public class ERC721Metadata extends Contract {
 
     public RemoteCall<String> name() {
         final Function function = new Function(FUNC_NAME,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> symbol() {
         final Function function = new Function(FUNC_SYMBOL,
-                Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> tokenURI(BigInteger _tokenId) {
         final Function function = new Function(FUNC_TOKENURI,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_tokenId)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                List.of(new Uint256(_tokenId)),
+                List.of(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 

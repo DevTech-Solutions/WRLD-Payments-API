@@ -27,6 +27,7 @@ import java.util.List;
  * Auto-generated with web3j version 4.1.1
  */
 
+@SuppressWarnings("unused")
 public class ERC721 extends Contract {
     private static final String BINARY = "Bin file was not provided";
 
@@ -47,16 +48,13 @@ public class ERC721 extends Contract {
     public static final String FUNC_ISAPPROVEDFORALL = "isApprovedForAll";
 
     public static final Event TRANSFER_EVENT = new Event("Transfer",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
-    ;
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
 
     public static final Event APPROVAL_EVENT = new Event("Approval",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
-    ;
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
 
     public static final Event APPROVALFORALL_EVENT = new Event("ApprovalForAll",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bool>() {}));
-    ;
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bool>() {}));
 
     @Deprecated
     protected ERC721(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -78,85 +76,89 @@ public class ERC721 extends Contract {
 
     public RemoteCall<String> getApproved(BigInteger _tokenId) {
         final Function function = new Function(FUNC_GETAPPROVED,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_tokenId)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                List.of(new Uint256(_tokenId)),
+                List.of(new TypeReference<Address>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _approved, BigInteger _tokenId, BigInteger weiValue) {
         final Function function = new Function(
                 FUNC_APPROVE,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_approved),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_approved),
                 new org.web3j.abi.datatypes.generated.Uint256(_tokenId)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<TransactionReceipt> transferFrom(String _from, String _to, BigInteger _tokenId, BigInteger weiValue) {
         final Function function = new Function(
                 FUNC_TRANSFERFROM,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_from),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_from),
                 new org.web3j.abi.datatypes.Address(_to),
                 new org.web3j.abi.datatypes.generated.Uint256(_tokenId)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<TransactionReceipt> safeTransferFrom(String _from, String _to, BigInteger _tokenId, BigInteger weiValue) {
         final Function function = new Function(
                 FUNC_SAFETRANSFERFROM,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_from),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_from),
                 new org.web3j.abi.datatypes.Address(_to),
                 new org.web3j.abi.datatypes.generated.Uint256(_tokenId)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<String> ownerOf(BigInteger _tokenId) {
         final Function function = new Function(FUNC_OWNEROF,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_tokenId)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+                List.of(new Uint256(_tokenId)),
+                List.of(new TypeReference<Address>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<BigInteger> balanceOf(String _owner) {
         final Function function = new Function(FUNC_BALANCEOF,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+                List.of(new Address(_owner)),
+                List.of(new TypeReference<Uint256>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> setApprovalForAll(String _operator, Boolean _approved) {
         final Function function = new Function(
                 FUNC_SETAPPROVALFORALL,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_operator),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_operator),
                 new org.web3j.abi.datatypes.Bool(_approved)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<TransactionReceipt> safeTransferFrom(String _from, String _to, BigInteger _tokenId, byte[] data, BigInteger weiValue) {
         final Function function = new Function(
                 FUNC_SAFETRANSFERFROM,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_from),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_from),
                 new org.web3j.abi.datatypes.Address(_to),
                 new org.web3j.abi.datatypes.generated.Uint256(_tokenId),
                 new org.web3j.abi.datatypes.DynamicBytes(data)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function, weiValue);
     }
 
     public RemoteCall<Boolean> isApprovedForAll(String _owner, String _operator) {
         final Function function = new Function(FUNC_ISAPPROVEDFORALL,
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner),
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_owner),
                 new org.web3j.abi.datatypes.Address(_operator)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+                List.of(new TypeReference<Bool>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
-        ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
+        ArrayList<TransferEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -169,17 +171,14 @@ public class ERC721 extends Contract {
     }
 
     public Flowable<TransferEventResponse> transferEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TransferEventResponse>() {
-            @Override
-            public TransferEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
-                TransferEventResponse typedResponse = new TransferEventResponse();
-                typedResponse.log = log;
-                typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse._to = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse._tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+            TransferEventResponse typedResponse = new TransferEventResponse();
+            typedResponse.log = log;
+            typedResponse._from = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse._to = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse._tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
+            return typedResponse;
         });
     }
 
@@ -191,7 +190,7 @@ public class ERC721 extends Contract {
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
-        ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
+        ArrayList<ApprovalEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -204,17 +203,14 @@ public class ERC721 extends Contract {
     }
 
     public Flowable<ApprovalEventResponse> approvalEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, ApprovalEventResponse>() {
-            @Override
-            public ApprovalEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
-                ApprovalEventResponse typedResponse = new ApprovalEventResponse();
-                typedResponse.log = log;
-                typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse._approved = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse._tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+            ApprovalEventResponse typedResponse = new ApprovalEventResponse();
+            typedResponse.log = log;
+            typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse._approved = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse._tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
+            return typedResponse;
         });
     }
 
@@ -226,7 +222,7 @@ public class ERC721 extends Contract {
 
     public List<ApprovalForAllEventResponse> getApprovalForAllEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVALFORALL_EVENT, transactionReceipt);
-        ArrayList<ApprovalForAllEventResponse> responses = new ArrayList<ApprovalForAllEventResponse>(valueList.size());
+        ArrayList<ApprovalForAllEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -239,17 +235,14 @@ public class ERC721 extends Contract {
     }
 
     public Flowable<ApprovalForAllEventResponse> approvalForAllEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, ApprovalForAllEventResponse>() {
-            @Override
-            public ApprovalForAllEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log);
-                ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
-                typedResponse.log = log;
-                typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse._operator = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse._approved = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log);
+            ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
+            typedResponse.log = log;
+            typedResponse._owner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse._operator = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse._approved = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
+            return typedResponse;
         });
     }
 
