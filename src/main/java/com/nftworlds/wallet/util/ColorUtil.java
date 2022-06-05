@@ -1,11 +1,11 @@
 package com.nftworlds.wallet.util;
 
-import com.iridium.iridiumcolorapi.IridiumColorAPI;
+import net.md_5.bungee.api.ChatColor;
 
 public class ColorUtil {
 
     public static String rgb(String s) {
-        return IridiumColorAPI.process(s);
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 
 }
