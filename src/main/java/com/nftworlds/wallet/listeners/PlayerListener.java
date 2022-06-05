@@ -15,6 +15,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class PlayerListener implements Listener {
 
     private NFTWorlds plugin;
@@ -30,21 +33,23 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLogin(PlayerLoginEvent event) {
-        new PlayerWalletReadyEvent(event.getPlayer())
-                .callEvent();
+        new PlayerWalletReadyEvent(event.getPlayer()).callEvent();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        if (!NFTPlayer.getByUUID(p.getUniqueId()).isLinked()) {
+        final UUID uuid = event.getPlayer().getUniqueId();
+
+        if (!NFTPlayer.getByUUID(uuid).isLinked()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (!p.isOnline())
+                final Player player = Bukkit.getPlayer(uuid);
+                if (Objects.isNull(player) || !player.isOnline())
                     return;
 
                 final String noLinkedWallet = NFTWorlds.getInstance().getLangConfig().getNoLinkedWallet();
-                p.sendMessage(ColorUtil.rgb(noLinkedWallet));
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                player.sendMessage(ColorUtil.rgb(noLinkedWallet));
+
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             }, 20L);
         }
     }
