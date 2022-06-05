@@ -46,7 +46,8 @@ public class Players {
         debug = nftWorlds.getNftConfig().isDebug();
 
         try {
-            credentials = Credentials.create("0x0000000000000000000000000000000000000000000000000000000000000000"); // We're only reading so this can be anything
+            // We're only reading so this can be anything
+            credentials = Credentials.create("0x0000000000000000000000000000000000000000000000000000000000000000");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -61,18 +62,42 @@ public class Players {
         startPlayerWalletUpdateListener();
     }
 
+    /**
+     * Get the primary wallet address of a player
+     *
+     * @param playerUUID The UUID of the player you want to get the primary wallet address of.
+     * @return The primary wallet address of the player.
+     */
     public String getPlayerPrimaryWallet(String playerUUID) throws Exception {
         return this.polygonPlayersContract.getPlayerPrimaryWallet(playerUUID.replace("-", "")).send();
     }
 
+    /**
+     * Get the primary wallet address for a player.
+     *
+     * @param playerUUID The UUID of the player you want to get the primary wallet of.
+     * @return The primary wallet address of the player.
+     */
     public CompletableFuture<String> getPlayerPrimaryWalletAsync(String playerUUID) throws Exception {
         return this.polygonPlayersContract.getPlayerPrimaryWallet(playerUUID.replace("-", "")).sendAsync();
     }
 
+    /**
+     * Get the secondary wallets of a player
+     *
+     * @param playerUUID The UUID of the player you want to get the secondary wallets for.
+     * @return A list of secondary wallets for the player.
+     */
     public List<String> getPlayerSecondaryWallets(String playerUUID) throws Exception {
         return this.polygonPlayersContract.getPlayerSecondaryWallets(playerUUID.replace("-", "")).send();
     }
 
+    /**
+     * > Get a list of secondary wallets for a player
+     *
+     * @param playerUUID The UUID of the player you want to get the secondary wallets of.
+     * @return A list of secondary wallets.
+     */
     public CompletableFuture<List> getPlayerSecondaryWalletsAsync(String playerUUID) throws Exception {
         return this.polygonPlayersContract.getPlayerSecondaryWallets(playerUUID.replace("-", "")).sendAsync();
     }
@@ -140,7 +165,9 @@ public class Players {
 
             Player p = Bukkit.getPlayer(uuid);
             if (p != null && p.isOnline()) {
-                p.sendMessage(ColorUtil.rgb(MessageFormat.format(NFTWorlds.getInstance().getLangConfig().getSetPrimaryWallet(), walletAddress.getValue())));
+                final String setPrimaryWallet = NFTWorlds.getInstance().getLangConfig().getSetPrimaryWallet();
+                p.sendMessage(ColorUtil.rgb(setPrimaryWallet.formatted(walletAddress.getValue())));
+
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
         }
@@ -163,7 +190,9 @@ public class Players {
             nftPlayer.getWallets().add(new Wallet(nftPlayer, walletAddress.getValue()));
             Player p = Bukkit.getPlayer(uuid);
             if (p.isOnline()) {
-                p.sendMessage(ColorUtil.rgb(MessageFormat.format(NFTWorlds.getInstance().getLangConfig().getSetSecondaryWallet(), walletAddress.getValue())));
+                final String setSecondaryWallet = NFTWorlds.getInstance().getLangConfig().getSetSecondaryWallet();
+                p.sendMessage(ColorUtil.rgb(setSecondaryWallet.formatted(walletAddress.getValue())));
+
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
         }
@@ -198,7 +227,9 @@ public class Players {
 
             Player p = Bukkit.getPlayer(uuid);
             if (p != null && p.isOnline()) {
-                p.sendMessage(ColorUtil.rgb(MessageFormat.format(NFTWorlds.getInstance().getLangConfig().getRemoveSecondaryWallet(), walletAddress.getValue())));
+                final String removeSecondaryWallet = NFTWorlds.getInstance().getLangConfig().getRemoveSecondaryWallet();
+                p.sendMessage(ColorUtil.rgb(removeSecondaryWallet.formatted(walletAddress.getValue())));
+
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             }
         }

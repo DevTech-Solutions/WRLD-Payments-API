@@ -14,7 +14,7 @@ import java.util.UUID;
 public class PaymentRequest<T> {
 
     @Getter
-    private static ArrayList<PaymentRequest> paymentRequests = new ArrayList<>();
+    private static ArrayList<PaymentRequest<?>> paymentRequests = new ArrayList<>();
 
     private UUID associatedPlayer;
     private double amount;
@@ -38,10 +38,11 @@ public class PaymentRequest<T> {
     }
 
     public void finalizeTransaction() {
-        new PlayerTransactEvent(
+        PlayerTransactEvent<?> event = new PlayerTransactEvent<>(
                 Objects.requireNonNull(Bukkit.getPlayer(this.getAssociatedPlayer())),
-                this.getAmount(), this.getReason(), this.getRefid(), this.getPayload())
-                .callEvent();
+                this.getAmount(), this.getReason(), this.getRefid(), this.getPayload());
+
+        event.callEvent();
 
         PaymentRequest.getPaymentRequests().remove(this);
     }

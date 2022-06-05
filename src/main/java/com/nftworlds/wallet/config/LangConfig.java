@@ -13,26 +13,20 @@ public class LangConfig {
     private File langFile;
     private FileConfiguration lang;
 
-    private String NoLinkedWallet;
+    private String noLinkedWallet;
+    private String incomingRequest;
+    private String incomingPending;
+    private String payHere;
+    private String paid;
+    private String setPrimaryWallet;
+    private String setSecondaryWallet;
+    private String removeSecondaryWallet;
+    private String scanQRCode;
+    private String playerNoLinkedWallet;
 
-    private String IncomingRequest;
-
-    private String IncomingPending;
-
-    private String PayHere;
-
-    private String Paid;
-
-    private String SetPrimaryWallet;
-
-    private String SetSecondaryWallet;
-
-    private String RemoveSecondaryWallet;
-
-    private String ScanQRCode;
-
-    private String PlayerNoLinkedWallet;
-
+    /**
+     * It loads the lang.yml file, and then sets the variables to the values in the file
+     */
     public void registerConfig() {
         langFile = new File(NFTWorlds.getInstance().getDataFolder(), "lang.yml");
         if (!langFile.exists()) {
@@ -41,16 +35,16 @@ public class LangConfig {
 
         lang = YamlConfiguration.loadConfiguration(langFile);
 
-        this.NoLinkedWallet = lang.getString("NoLinkedWallet");
-        this.IncomingRequest = lang.getString("IncomingRequest");
-        this.IncomingPending = lang.getString("IncomingPending");
-        this.PayHere = lang.getString("PayHere");
-        this.Paid = lang.getString("Paid");
-        this.SetPrimaryWallet = lang.getString("SetPrimaryWallet");
-        this.SetSecondaryWallet = lang.getString("SetSecondaryWallet");
-        this.RemoveSecondaryWallet = lang.getString("RemoveSecondaryWallet");
-        this.ScanQRCode = lang.getString("ScanQRCode");
-        this.PlayerNoLinkedWallet = lang.getString("PlayerNoLinkedWallet");
+        this.noLinkedWallet = lang.getString("NoLinkedWallet");
+        this.incomingRequest = lang.getString("IncomingRequest");
+        this.incomingPending = lang.getString("IncomingPending");
+        this.payHere = lang.getString("PayHere");
+        this.paid = lang.getString("Paid");
+        this.setPrimaryWallet = lang.getString("SetPrimaryWallet");
+        this.setSecondaryWallet = lang.getString("SetSecondaryWallet");
+        this.removeSecondaryWallet = lang.getString("RemoveSecondaryWallet");
+        this.scanQRCode = lang.getString("ScanQRCode");
+        this.playerNoLinkedWallet = lang.getString("PlayerNoLinkedWallet");
     }
 
 }

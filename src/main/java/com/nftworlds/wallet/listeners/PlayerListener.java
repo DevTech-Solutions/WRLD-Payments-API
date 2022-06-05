@@ -39,8 +39,11 @@ public class PlayerListener implements Listener {
         Player p = event.getPlayer();
         if (!NFTPlayer.getByUUID(p.getUniqueId()).isLinked()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (!p.isOnline()) return;
-                p.sendMessage(ColorUtil.rgb(NFTWorlds.getInstance().getLangConfig().getNoLinkedWallet()));
+                if (!p.isOnline())
+                    return;
+
+                final String noLinkedWallet = NFTWorlds.getInstance().getLangConfig().getNoLinkedWallet();
+                p.sendMessage(ColorUtil.rgb(noLinkedWallet));
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             }, 20L);
         }

@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.h2.value.CaseInsensitiveConcurrentMap;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class NFTWorlds extends JavaPlugin {
     private static NFTWorlds plugin;
@@ -75,17 +76,33 @@ public class NFTWorlds extends JavaPlugin {
     }
 
     public void registerCommands() {
-        getCommand("wallet").setExecutor(new WalletGUICommand());
+        Objects.requireNonNull(getCommand("wallet")).setExecutor(new WalletGUICommand());
     }
 
+    /**
+     * This function adds a wallet to the wallets map.
+     *
+     * @param wallet The wallet to add to the wallet list.
+     */
     public void addWallet(Wallet wallet) {
         wallets.put(wallet.getAddress(), wallet);
     }
 
+    /**
+     * Given an address, return the wallet associated with that address.
+     *
+     * @param address The address of the wallet you want to get.
+     * @return The wallet object that is associated with the address.
+     */
     public Wallet getWallet(String address) {
         return wallets.get(address);
     }
 
+    /**
+     * Remove the wallet from the map of wallets.
+     *
+     * @param wallet The wallet to remove.
+     */
     public void removeWallet(Wallet wallet) {
         wallets.remove(wallet.getAddress(), wallet);
     }

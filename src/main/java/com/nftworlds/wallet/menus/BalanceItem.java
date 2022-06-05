@@ -3,6 +3,7 @@ package com.nftworlds.wallet.menus;
 import com.nftworlds.wallet.objects.NFTPlayer;
 import com.nftworlds.wallet.util.ColorUtil;
 import com.nftworlds.wallet.util.NumberUtil;
+import net.md_5.bungee.api.ChatColor;
 import ninja.amp.ampmenus.events.ItemClickEvent;
 import ninja.amp.ampmenus.items.MenuItem;
 import org.bukkit.Material;
@@ -14,7 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BalanceItem extends MenuItem {
-    private static final String DISPLAY_NAME = ColorUtil.rgb("<SOLID:4DFB4A>&l$WRLD Balance");
+    private static final ChatColor LIME = ChatColor.of("#4DFB4A");
+    private static final ChatColor AQUA = ChatColor.of("#A9D9FB");
+
+    private static final String DISPLAY_NAME = ColorUtil.rgb(LIME + "&l$WRLD Balance");
     private static final ItemStack ICON = new ItemStack(Material.EMERALD);
 
     public BalanceItem() {
@@ -32,7 +36,7 @@ public class BalanceItem extends MenuItem {
         try {
             double balance = NFTPlayer.getByUUID(player.getUniqueId()).getPrimaryWallet().getPolygonWRLDBalance();
             ItemMeta meta = finalIcon.getItemMeta();
-            List<String> lore = Arrays.asList(ColorUtil.rgb("<SOLID:A9D9FB>" + NumberUtil.round(balance, 3) + " $WRLD"));
+            List<String> lore = List.of(ColorUtil.rgb(AQUA.toString() + NumberUtil.round(balance, 3) + " $WRLD"));
             meta.setLore(lore);
             finalIcon.setItemMeta(meta);
         } catch (Exception e) {

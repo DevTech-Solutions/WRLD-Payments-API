@@ -16,36 +16,40 @@ import java.util.UUID;
 public class WalletAPI {
 
     /**
-     * Get an NFT Player
-     * @param uuid
-     * @return NFT Player
+     * This function returns an NFTPlayer object that represents the player with the given UUID.
+     *
+     * @param uuid The UUID of the player you want to get the NFTPlayer object of.
+     * @return A NFTPlayer object.
      */
     public NFTPlayer getNFTPlayer(UUID uuid) {
         return NFTPlayer.getByUUID(uuid);
     }
 
     /**
-     * Get an NFT Player
-     * @param player
-     * @return NFT Player
+     * Get the NFTPlayer object for the given player.
+     *
+     * @param player The player you want to get the NFTPlayer of.
+     * @return The NFTPlayer object that is associated with the player.
      */
     public NFTPlayer getNFTPlayer(Player player) {
         return NFTPlayer.getByUUID(player.getUniqueId());
     }
 
     /**
-     * Get a player's wallet
-     * @param player
-     * @return player's wallet
+     * It returns a list of wallets for a player
+     *
+     * @param player The player you want to get the wallets of.
+     * @return A list of wallets.
      */
     public List<Wallet> getWallets(Player player) {
         return getWallets(player.getUniqueId());
     }
 
     /**
-     * Get a player's wallet
-     * @param uuid
-     * @return player's wallet
+     * Get the wallets of a player
+     *
+     * @param uuid The UUID of the player you want to get the wallets of.
+     * @return A list of wallets
      */
     public List<Wallet> getWallets(UUID uuid) {
         NFTPlayer player = NFTPlayer.getByUUID(uuid);
@@ -56,18 +60,20 @@ public class WalletAPI {
     }
 
     /**
-     * Get a player's primary wallet
-     * @param player
-     * @return player's wallet
+     * This function returns the primary wallet of a player.
+     *
+     * @param player The player you want to get the wallet of.
+     * @return The primary wallet of the player.
      */
     public Wallet getPrimaryWallet(Player player) {
         return getPrimaryWallet(player.getUniqueId());
     }
 
     /**
-     * Get a player's primary wallet
-     * @param uuid
-     * @return player's wallet
+     * Get the primary wallet of the player with the given UUID.
+     *
+     * @param uuid The UUID of the player you want to get the wallet of.
+     * @return The primary wallet of the player.
      */
     public Wallet getPrimaryWallet(UUID uuid) {
         NFTPlayer player = NFTPlayer.getByUUID(uuid);
@@ -78,13 +84,16 @@ public class WalletAPI {
     }
 
     /**
-     * Send a request for a WRLD transaction to a player
-     * @param uuid
-     * @param amount
-     * @param network
-     * @param reason
-     * @param canDuplicate
-     * @param payload
+     * Request a WRLD from the player.
+     * player -> server transaction
+     *
+     * @param uuid The UUID of the player to request WRLD from.
+     * @param amount The amount of WRLD to request.
+     * @param network The network to send the request to.
+     * @param reason The reason for the request. This will be displayed to the user.
+     * @param canDuplicate If true, the player will be able to duplicate the request.
+     * @param payload This is the payload that will be sent to the player.
+     *                It can be anything, but it's recommended to use a String.
      */
     public <T> void requestWRLD(UUID uuid, double amount, Network network, String reason, boolean canDuplicate, T payload) throws IOException, InterruptedException {
         NFTPlayer player = NFTPlayer.getByUUID(uuid);
@@ -94,11 +103,13 @@ public class WalletAPI {
     }
 
     /**
-     * Send WRLD to a player's primary wallet
-     * @param uuid
-     * @param amount
-     * @param network
-     * @param reason
+     * Send a player WRLD.
+     * server -> player transaction
+     *
+     * @param uuid The UUID of the player you want to send WRLD to.
+     * @param amount The amount of WRLD to send.
+     * @param network The network you want to send the WRLD to.
+     * @param reason The reason for the transaction.
      */
     public void sendWRLD(UUID uuid, double amount, Network network, String reason) {
         NFTPlayer player = NFTPlayer.getByUUID(uuid);
@@ -108,11 +119,13 @@ public class WalletAPI {
     }
 
     /**
-     * Send WRLD to a player's primary wallet
-     * @param player
-     * @param amount
-     * @param network
-     * @param reason
+     * Send a player WRLD.
+     * server -> player transaction
+     *
+     * @param player The player to send the WRLD to.
+     * @param amount The amount of WRLD to send.
+     * @param network The network you want to send the WRLD to.
+     * @param reason The reason for the transaction.
      */
     public void sendWRLD(Player player, double amount, Network network, String reason) {
         NFTPlayer p = NFTPlayer.getByUUID(player.getUniqueId());
@@ -122,12 +135,14 @@ public class WalletAPI {
     }
 
     /**
-     * Create a peer to peer payment link
-     * @param from
-     * @param to
-     * @param amount
-     * @param network
-     * @param reason
+     * Create a payment from one player to another.
+     * player -> player transaction
+     *
+     * @param from The player who is sending the payment
+     * @param to The player who is receiving the payment
+     * @param amount The amount of money to send
+     * @param network The network you want to use.
+     * @param reason The reason for the payment.
      */
     public void createPlayerPayment(Player from, Player to, double amount, Network network, String reason) {
         NFTPlayer nftPlayerFrom = NFTPlayer.getByUUID(from.getUniqueId());
@@ -138,8 +153,10 @@ public class WalletAPI {
     }
 
     /**
-     * Register a custom ERC20 token. This should be called during startup.
-     * @param contractAddress
+     * It takes a contract address and a network, and adds the contract to the list of custom tokens
+     *
+     * @param contractAddress The address of the contract you want to register.
+     * @param network The network you want to register the token on.
      */
     public void registerERC20(String contractAddress, Network network) {
         if (network.equals(Network.POLYGON)) {
