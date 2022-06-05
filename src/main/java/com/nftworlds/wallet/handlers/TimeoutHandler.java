@@ -7,6 +7,9 @@ import org.bukkit.Bukkit;
 
 public class TimeoutHandler {
 
+    /**
+     * Every 20 ticks, remove any payment requests or peer to peer payments that have timed out
+     */
     public void handleTimeouts() {
         Bukkit.getScheduler().runTaskTimer(NFTWorlds.getInstance(), () -> {
             PaymentRequest.getPaymentRequests().removeIf(paymentRequest -> paymentRequest.getTimeout() < System.currentTimeMillis());
