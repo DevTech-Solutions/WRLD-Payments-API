@@ -14,13 +14,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
-    private NFTWorlds plugin;
+    private final NFTWorlds plugin;
 
     public PlayerListener() {
         this.plugin = NFTWorlds.getInstance();
@@ -56,8 +57,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        NFTPlayer.remove(event.getPlayer().getUniqueId());
-        restoreItemReplacedWithMap(event.getPlayer());
+        final Player player = event.getPlayer();
+        NFTPlayer.remove(player.getUniqueId());
+        restoreItemReplacedWithMap(player);
     }
 
     @EventHandler
@@ -67,12 +69,18 @@ public class PlayerListener implements Listener {
         }
     }
 
-    private void restoreItemReplacedWithMap(Player player) {
-        ItemStack previousItem = QRMapManager.playerPreviousItem.get(player.getUniqueId());
-        if (previousItem != null) {
-            player.getInventory().setItem(0, previousItem);
-            QRMapManager.playerPreviousItem.remove(player.getUniqueId());
-        }
+    /**
+     * If the player has a previous item, set it back to their inventory
+     *
+     * @param player The player who is holding the map.
+     */
+    private void restoreItemReplacedWithMap(@NotNull Player player) {
+        final ItemStack previousItem = QRMapManager.playerPreviousItem.get(player.getUniqueId());
+        if (Objects.isNull(previousItem))
+            return;
+
+        player.getInventory().setItem(0, previousItem);
+        QRMapManager.playerPreviousItem.remove(player.getUniqueId());
     }
 
 }
