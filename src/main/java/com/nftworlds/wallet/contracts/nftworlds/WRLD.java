@@ -14,6 +14,7 @@ import com.nftworlds.wallet.objects.payments.PeerToPeerPayment;
 import com.nftworlds.wallet.rpcs.Ethereum;
 import com.nftworlds.wallet.rpcs.Polygon;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
@@ -34,9 +35,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class WRLD {
-    private EthereumWRLDToken ethereumWRLDTokenContract;
-    private PolygonWRLDToken polygonWRLDTokenContract;
-    private boolean debug;
+    private final EthereumWRLDToken ethereumWRLDTokenContract;
+    private final PolygonWRLDToken polygonWRLDTokenContract;
+    private final boolean debug;
 
     public static final String TRANSFER_EVENT_TOPIC = Hash.sha3String("Transfer(address,address,uint256)");
     public static final String TRANSFER_REF_EVENT_TOPIC = Hash.sha3String("TransferRef(address,address,uint256,uint256)");
@@ -75,27 +76,58 @@ public class WRLD {
         startPolygonPaymentListener();
     }
 
-    /*
-     * Public
+    /**
+     * This function returns the balance of the Ethereum wallet address passed in as a parameter
+     *
+     * @param walletAddress The wallet address of the user.
+     * @return The balance of the wallet address.
      */
-
-    public BigInteger getEthereumBalance(String walletAddress) throws Exception {
+    public @NotNull BigInteger getEthereumBalance(@NotNull String walletAddress) throws Exception {
         return this.ethereumWRLDTokenContract.balanceOf(walletAddress).send();
     }
 
-    public CompletableFuture<BigInteger> getEthereumBalanceAsync(String walletAddress) throws Exception {
+    /**
+     * Get the balance of the Ethereum wallet address passed in as a parameter.
+     *
+     * The function is asynchronous, so it returns a CompletableFuture. The CompletableFuture is a Java class that
+     * represents the result of an asynchronous computation
+     *
+     * @param walletAddress The address of the wallet you want to check the balance of.
+     * @return A CompletableFuture object.
+     */
+    public @NotNull CompletableFuture<BigInteger> getEthereumBalanceAsync(@NotNull String walletAddress) {
         return this.ethereumWRLDTokenContract.balanceOf(walletAddress).sendAsync();
     }
 
-    public BigInteger getPolygonBalance(String walletAddress) throws Exception {
+    /**
+     * > This function returns the balance of the Polygon WRLD token for the given wallet address
+     *
+     * @param walletAddress The wallet address of the user
+     * @return The balance of the wallet address.
+     */
+    public @NotNull BigInteger getPolygonBalance(@NotNull String walletAddress) throws Exception {
         return this.polygonWRLDTokenContract.balanceOf(walletAddress).send();
     }
 
-    public CompletableFuture<BigInteger> getPolygonBalanceAsync(String walletAddress) throws Exception {
+    /**
+     * Get the balance of the Polygon wallet address passed in as a parameter.
+     *
+     * The function is asynchronous, so it returns a CompletableFuture. The CompletableFuture is a Java class that
+     * represents the result of an asynchronous computation
+     *
+     * @param walletAddress The address of the wallet you want to check the balance of.
+     * @return A CompletableFuture object.
+     */
+    public @NotNull CompletableFuture<BigInteger> getPolygonBalanceAsync(@NotNull String walletAddress) {
         return this.polygonWRLDTokenContract.balanceOf(walletAddress).sendAsync();
     }
 
-    public PolygonWRLDToken getPolygonWRLDTokenContract() {
+    /**
+     * > This function returns the PolygonWRLDToken contract
+     *
+     * @return The polygonWRLDTokenContract
+     */
+    public @NotNull PolygonWRLDToken getPolygonWRLDTokenContract() {
         return this.polygonWRLDTokenContract;
     }
 
@@ -103,6 +135,14 @@ public class WRLD {
      * Private
      */
 
+    /**
+     * Start listening for events on the Polygon blockchain,
+     * and when you see a transfer event,
+     * call the appropriate function to handle it.
+     *
+     * The first thing we do is create an EthFilter object. This object is used to tell the Polygon blockchain what events
+     * we want to listen for. In this case, we want to listen for transfer events
+     */
     private void startPolygonPaymentListener() {
         EthFilter transferFilter = new EthFilter(
                 DefaultBlockParameterName.LATEST,
