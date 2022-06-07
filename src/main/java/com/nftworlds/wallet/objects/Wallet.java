@@ -12,6 +12,7 @@ import com.nftworlds.wallet.qrmaps.QRMapManager;
 import com.nftworlds.wallet.util.ColorUtil;
 import com.nftworlds.wallet.util.PlayerUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -281,7 +282,9 @@ public class Wallet {
         }
 
         final String payHere = NFTWorlds.getInstance().getLangConfig().getPayHere();
-        player.sendMessage(ColorUtil.rgb(payHere.formatted(paymentLink)));
+        final Component text = Component.text(ColorUtil.rgb(payHere).formatted(paymentLink))
+                        .clickEvent(ClickEvent.openUrl(paymentLink));
+        player.sendMessage(text);
     }
 
     /**
@@ -322,7 +325,9 @@ public class Wallet {
 
                     if (walletEvent.isDefaultReceiveMessage()) {
                         final String paid = NFTWorlds.getInstance().getLangConfig().getPaid();
-                        PlayerUtil.sendMessage(playerUniqueId, ColorUtil.rgb(paid.formatted(reason, receiptLink)));
+                        final Component text = Component.text(ColorUtil.rgb(paid).formatted(reason, receiptLink))
+                                .clickEvent(ClickEvent.openUrl("https://polygonscan.com/tx/" + receiptLink));
+                        PlayerUtil.sendMessage(playerUniqueId, text);
                     }
                 }).exceptionally(error -> {
                     NFTWorlds.getInstance().getLogger().warning("Caught error in transfer function exceptionally: " + error);
@@ -357,7 +362,10 @@ public class Wallet {
 
                 if (walletEvent.isDefaultReceiveMessage()) {
                     final String paid = NFTWorlds.getInstance().getLangConfig().getPaid();
-                    PlayerUtil.sendMessage(playerUniqueId, ColorUtil.rgb(paid.formatted(reason, receiptLink)));
+
+                    final Component text = Component.text(ColorUtil.rgb(paid).formatted(reason, receiptLink))
+                            .clickEvent(ClickEvent.openUrl("https://polygonscan.com/tx/" + receiptLink));
+                    PlayerUtil.sendMessage(playerUniqueId, text);
                 }
             });
         } catch (IOException | InterruptedException exception) {
@@ -380,9 +388,11 @@ public class Wallet {
         if (Objects.isNull(player))
             return;
 
-        final String playerNoLinkedWallet = NFTWorlds.getInstance().getLangConfig().getPlayerNoLinkedWallet();
         if (!to.isLinked()) {
-            player.sendMessage(ColorUtil.rgb(playerNoLinkedWallet));
+            final String playerNoLinkedWallet = NFTWorlds.getInstance().getLangConfig().getPlayerNoLinkedWallet();
+            final Component text = Component.text(ColorUtil.rgb(playerNoLinkedWallet))
+                            .clickEvent(ClickEvent.openUrl("https://nftworlds.com/login"));
+            player.sendMessage(text);
             return;
         }
 
@@ -398,7 +408,9 @@ public class Wallet {
                 """.formatted(to.getPrimaryWallet().getAddress(), amount, refID.getValue().toString(), (int) (timeout / 1000));
 
         final String payHere = NFTWorlds.getInstance().getLangConfig().getPayHere();
-        player.sendMessage(ColorUtil.rgb(payHere.formatted(paymentLink)));
+        final Component text = Component.text(ColorUtil.rgb(payHere).formatted(paymentLink))
+                .clickEvent(ClickEvent.openUrl(paymentLink));
+        player.sendMessage(text);
     }
 
     /**

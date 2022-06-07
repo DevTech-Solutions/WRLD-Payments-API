@@ -42,6 +42,19 @@ public final class PlayerUtil {
     }
 
     /**
+     * Send a message to a player if they are online.
+     *
+     * @param uuid The UUID of the player you want to send the message to.
+     * @param component The string to send to the player.
+     */
+    public static void sendMessage(@NotNull UUID uuid, @NotNull Component component) {
+        final Player player = Bukkit.getPlayer(uuid);
+        if (Objects.nonNull(player) && player.isOnline()) {
+            player.sendMessage(component);
+        }
+    }
+
+    /**
      * It sends an action bar to a player
      *
      * @param uuid The UUID of the player you want to send the action bar to.

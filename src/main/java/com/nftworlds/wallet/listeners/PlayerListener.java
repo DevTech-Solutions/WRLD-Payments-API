@@ -5,6 +5,8 @@ import com.nftworlds.wallet.event.PlayerWalletReadyEvent;
 import com.nftworlds.wallet.objects.NFTPlayer;
 import com.nftworlds.wallet.qrmaps.QRMapManager;
 import com.nftworlds.wallet.util.ColorUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -48,7 +50,9 @@ public class PlayerListener implements Listener {
                     return;
 
                 final String noLinkedWallet = NFTWorlds.getInstance().getLangConfig().getNoLinkedWallet();
-                player.sendMessage(ColorUtil.rgb(noLinkedWallet));
+                final Component text = Component.text(ColorUtil.rgb(noLinkedWallet))
+                        .clickEvent(ClickEvent.openUrl("https://nftworlds.com/login"));
+                player.sendMessage(text);
 
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
             }, 20L);
