@@ -13,6 +13,8 @@ import com.nftworlds.wallet.util.ColorUtil;
 import com.nftworlds.wallet.util.PlayerUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -250,7 +252,7 @@ public class Wallet {
                     &amount=%s\
                     &ref=%s\
                     &expires=%s\
-                    &duplicate=%s
+                    &duplicate=%s\
                     """.formatted(serverWalletAddress, amount, refID.getValue().toString(), (int) (timeout / 1000), canDuplicate);
 
 
@@ -283,7 +285,8 @@ public class Wallet {
 
         final String payHere = NFTWorlds.getInstance().getLangConfig().getPayHere();
         final Component text = Component.text(ColorUtil.rgb(payHere).formatted(paymentLink))
-                        .clickEvent(ClickEvent.openUrl(paymentLink));
+                .clickEvent(ClickEvent.openUrl(paymentLink))
+                .hoverEvent(HoverEvent.showText(Component.text("Click to pay!", NamedTextColor.WHITE)));
         player.sendMessage(text);
     }
 
@@ -326,7 +329,7 @@ public class Wallet {
                     if (walletEvent.isDefaultReceiveMessage()) {
                         final String paid = NFTWorlds.getInstance().getLangConfig().getPaid();
                         final Component text = Component.text(ColorUtil.rgb(paid).formatted(reason, receiptLink))
-                                .clickEvent(ClickEvent.openUrl("https://polygonscan.com/tx/" + receiptLink));
+                                .clickEvent(ClickEvent.openUrl(receiptLink));
                         PlayerUtil.sendMessage(playerUniqueId, text);
                     }
                 }).exceptionally(error -> {
@@ -364,7 +367,7 @@ public class Wallet {
                     final String paid = NFTWorlds.getInstance().getLangConfig().getPaid();
 
                     final Component text = Component.text(ColorUtil.rgb(paid).formatted(reason, receiptLink))
-                            .clickEvent(ClickEvent.openUrl("https://polygonscan.com/tx/" + receiptLink));
+                            .clickEvent(ClickEvent.openUrl(receiptLink));
                     PlayerUtil.sendMessage(playerUniqueId, text);
                 }
             });
@@ -404,12 +407,13 @@ public class Wallet {
                 https://nftworlds.com/pay/?to=%s\
                 &amount=%s\
                 &ref=%s\
-                &expires=%s
+                &expires=%s\
                 """.formatted(to.getPrimaryWallet().getAddress(), amount, refID.getValue().toString(), (int) (timeout / 1000));
 
         final String payHere = NFTWorlds.getInstance().getLangConfig().getPayHere();
         final Component text = Component.text(ColorUtil.rgb(payHere).formatted(paymentLink))
-                .clickEvent(ClickEvent.openUrl(paymentLink));
+                .clickEvent(ClickEvent.openUrl(paymentLink))
+                .hoverEvent(HoverEvent.showText(Component.text("Click to pay!", NamedTextColor.WHITE)));
         player.sendMessage(text);
     }
 

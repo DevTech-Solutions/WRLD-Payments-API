@@ -7,6 +7,8 @@ import com.nftworlds.wallet.qrmaps.QRMapManager;
 import com.nftworlds.wallet.util.ColorUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
