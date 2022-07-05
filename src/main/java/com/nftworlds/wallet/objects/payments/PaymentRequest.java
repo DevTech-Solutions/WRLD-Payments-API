@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.web3j.abi.datatypes.generated.Uint256;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,16 +15,16 @@ import java.util.UUID;
 public class PaymentRequest<T> {
 
     @Getter
-    private static ArrayList<PaymentRequest<?>> paymentRequests = new ArrayList<>();
+    private static final List<PaymentRequest<?>> paymentRequests = new ArrayList<>();
 
-    private UUID associatedPlayer;
-    private double amount;
-    private Uint256 refid;
-    private Network network;
-    private String reason;
-    private long timeout;
-    private boolean canDuplicate;
-    private T payload;
+    private final UUID associatedPlayer;
+    private final double amount;
+    private final Uint256 refid;
+    private final Network network;
+    private final String reason;
+    private final long timeout;
+    private final boolean canDuplicate;
+    private final T payload;
 
     public PaymentRequest(UUID associatedPlayer, double amount, Uint256 refid, Network network, String reason, long timeout, boolean canDuplicate, T payload) {
         this.associatedPlayer = associatedPlayer;
@@ -51,8 +52,8 @@ public class PaymentRequest<T> {
         paymentRequests.removeIf(paymentRequest -> paymentRequest.getAssociatedPlayer().equals(uuid));
     }
 
-    public static PaymentRequest getPayment(Uint256 refid, Network network) {
-        for (PaymentRequest p : paymentRequests) {
+    public static PaymentRequest<?> getPayment(Uint256 refid, Network network) {
+        for (PaymentRequest<?> p : paymentRequests) {
             if (refid.equals(p.getRefid()) && network == p.getNetwork()) {
                 return p;
             }
