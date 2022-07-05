@@ -1,6 +1,6 @@
 package com.nftworlds.wallet.event;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -12,13 +12,13 @@ import org.web3j.abi.datatypes.generated.Uint256;
 public class PeerToPeerPayEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private final Player to;
-    private final Player from;
+    private final OfflinePlayer to;
+    private final OfflinePlayer from;
     private final double amount;
     private final String reason;
     private final Uint256 refID;
 
-    public PeerToPeerPayEvent(@NotNull Player to, @NotNull Player from, double amount,
+    public PeerToPeerPayEvent(@NotNull OfflinePlayer to, @NotNull OfflinePlayer from, double amount,
                               @NotNull String reason, @NotNull Uint256 refID) {
         this.to = to;
         this.from = from;
@@ -33,7 +33,7 @@ public class PeerToPeerPayEvent extends Event {
      * @return Receiver of transaction
      */
     @NotNull
-    public Player getTo() { return to; }
+    public OfflinePlayer getTo() { return to; }
 
     /**
      * Gets the player the payment was sent by
@@ -41,14 +41,13 @@ public class PeerToPeerPayEvent extends Event {
      * @return Sender of transaction
      */
     @NotNull
-    public Player getFrom() { return from; }
+    public OfflinePlayer getFrom() { return from; }
 
     /**
      * Gets the amount of $WRLD from the transaction
      *
      * @return Amount of $WRLD
      */
-    @NotNull
     public double getAmount() {
         return amount;
     }
@@ -58,7 +57,6 @@ public class PeerToPeerPayEvent extends Event {
      *
      * @return Amount of $WRLD
      */
-    @NotNull
     public double getWRLD() {
         return amount;
     }

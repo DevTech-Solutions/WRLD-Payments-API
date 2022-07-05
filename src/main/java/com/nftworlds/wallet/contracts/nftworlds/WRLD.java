@@ -13,8 +13,10 @@ import com.nftworlds.wallet.objects.payments.PaymentRequest;
 import com.nftworlds.wallet.objects.payments.PeerToPeerPayment;
 import com.nftworlds.wallet.rpcs.Ethereum;
 import com.nftworlds.wallet.rpcs.Polygon;
+import com.nftworlds.wallet.util.LogUtil;
 import io.reactivex.disposables.Disposable;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
@@ -32,6 +34,7 @@ import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -176,118 +179,111 @@ public class WRLD {
                 );
     }
 
+    @SuppressWarnings("rawtypes")
     private void paymentListener_handleTransferRefEvent(Log log) {
-        if (debug) NFTWorlds.getInstance().getLogger().log(Level.INFO, "Transfer initiated");
+        final List<String> topics = log.getTopics();
+        final TypeReference<Address> addressTypeReference = new TypeReference<>() {};
+        final Address fromAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(1), addressTypeReference);
+        final Address toAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(2), addressTypeReference);
 
-        List<String> topics = log.getTopics();
-        List<Type> data = FunctionReturnDecoder.decode(log.getData(), PolygonWRLDToken.TRANSFERREF_EVENT.getNonIndexedParameters());
-        TypeReference<Address> addressTypeReference = new TypeReference<Address>() {
-        };
+        final List<Type> data = FunctionReturnDecoder.decode(log.getData(), PolygonWRLDToken.TRANSFERREF_EVENT.getNonIndexedParameters());
+        final Uint256 amount = (Uint256) data.get(0);
+        final Uint256 ref = (Uint256) data.get(1);
+        final double received = Convert.fromWei(amount.getValue().toString(), Convert.Unit.ETHER).doubleValue();
 
-        Address fromAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(1), addressTypeReference);
-        Address toAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(2), addressTypeReference);
-        Uint256 amount = (Uint256) data.get(0);
-        Uint256 ref = (Uint256) data.get(1);
-        double received = Convert.fromWei(amount.getValue().toString(), Convert.Unit.ETHER).doubleValue();
+        LogUtil.log("Transfer initiated");
+        LogUtil.log("Transfer of %s $WRLD with refID %s from %s to %s", received, ref.getValue().toString(), fromAddress.toString(), toAddress.toString());
 
-        if (debug)
-            NFTWorlds.getInstance().getLogger().log(Level.INFO, "Transfer of " + received + " $WRLD with refid " + ref.getValue().toString() + " from " + fromAddress.toString() + " to " + toAddress.toString());
-
-        PaymentRequest paymentRequest = PaymentRequest.getPayment(ref, Network.POLYGON);
-
-        if (paymentRequest != null) {
-            if (debug) NFTWorlds.getInstance().getLogger().log(Level.INFO, "Transfer found in payment requests");
-            if (debug)
-                NFTWorlds.getInstance().getLogger().log(Level.INFO, "Requested: " + paymentRequest.getAmount() + ", Received: " + received);
+        final PaymentRequest<?> paymentRequest = PaymentRequest.getPayment(ref, Network.POLYGON);
+        if (Objects.nonNull(paymentRequest)) {
+            LogUtil.log("Transfer found in payment requests");
+            LogUtil.log("Requested: %s, Received: %s", paymentRequest.getAmount(), received);
 
             if (paymentRequest.getAmount() == received) {
-                if (debug) NFTWorlds.getInstance().getLogger().log(Level.INFO, "Payment amount verified");
+                LogUtil.log("Payment amount verified");
 
-                if (!paymentRequest.isCanDuplicate()) PaymentRequest.getPaymentRequests().remove(paymentRequest);
-
-                if (paymentRequest != null) {
-                    if (debug) NFTWorlds.getInstance().getLogger().log(Level.INFO, "Event fired");
-                    Bukkit.getScheduler().runTask(NFTWorlds.getInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            new PlayerTransactEvent(
-                                    Bukkit.getPlayer(paymentRequest.getAssociatedPlayer()), // <-- derp.. only works for online players
-                                    received,
-                                    paymentRequest.getReason(),
-                                    ref,
-                                    paymentRequest.getPayload()
-                            ).callEvent(); //TODO: Test if works for offline players
-                        }
-                    });
+                if (!paymentRequest.isCanDuplicate()) {
+                    PaymentRequest.getPaymentRequests().remove(paymentRequest);
                 }
-            } else {
-                NFTWorlds.getInstance().getLogger().log(
-                        Level.WARNING,
-                        "Payment with REFID " + ref.getValue().toString() + " was receive but amount was " + received + ". Expected " + paymentRequest.getAmount()
-                );
+
+                LogUtil.log("Event fired");
+                Bukkit.getScheduler().runTask(NFTWorlds.getInstance(), () -> {
+                    final OfflinePlayer player = Bukkit.getOfflinePlayer(paymentRequest.getAssociatedPlayer());
+                    new PlayerTransactEvent<>(
+                            player,
+                            received,
+                            paymentRequest.getReason(),
+                            ref,
+                            paymentRequest.getPayload()
+                    ).callEvent(); //TODO: Test if works for offline players
+                });
+                return;
             }
-        } else { //Now let's check if this is a peer to peer payment
-            PeerToPeerPayment peerToPeerPayment = PeerToPeerPayment.getPayment(ref, Network.POLYGON);
 
-            if (peerToPeerPayment != null) {
-                if (debug)
-                    NFTWorlds.getInstance().getLogger().log(Level.INFO, "Transfer found in peer to peer payments");
-                if (debug)
-                    NFTWorlds.getInstance().getLogger().log(Level.INFO, "Requested: " + peerToPeerPayment.getAmount() + ", Received: " + received);
+            LogUtil.log(Level.WARNING, "Payment with REFID %s was receive but amount was %s. Expected %s", ref.getValue().toString(), received, paymentRequest.getAmount());
+            return;
+        }
 
-                if (peerToPeerPayment.getAmount() != received) {
-                    peerToPeerPayment.setAmount(received);
-                    if (debug)
-                        NFTWorlds.getInstance().getLogger().log(Level.INFO, "Amount expected was different than amount received, value adjusted.");
-                }
+        // Now let's check if this is a peer to peer payment
+        final PeerToPeerPayment peerToPeerPayment = PeerToPeerPayment.getPayment(ref, Network.POLYGON);
 
-                PeerToPeerPayment.getPeerToPeerPayments().remove(peerToPeerPayment);
+        if (Objects.nonNull(peerToPeerPayment)) {
+            LogUtil.log("Transfer found in peer to peer payments");
+            LogUtil.log("Requested: %s, Received: %s", peerToPeerPayment.getAmount(), received);
 
-                if (peerToPeerPayment != null) {
-                    if (debug) NFTWorlds.getInstance().getLogger().log(Level.INFO, "Event fired");
-                    Bukkit.getScheduler().runTask(NFTWorlds.getInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            new PeerToPeerPayEvent(
-                                    Bukkit.getPlayer(peerToPeerPayment.getTo()),
-                                    Bukkit.getPlayer(peerToPeerPayment.getFrom()),
-                                    received,
-                                    peerToPeerPayment.getReason(),
-                                    ref
-                            ).callEvent(); //TODO: Test if works for offline players
-                        }
-                    });
-                }
+            if (peerToPeerPayment.getAmount() != received) {
+                LogUtil.log("Amount expected was different than amount received, value adjusted.");
+                peerToPeerPayment.setAmount(received);
             }
+
+            PeerToPeerPayment.getPeerToPeerPayments().remove(peerToPeerPayment);
+
+            LogUtil.log("Event fired");
+            Bukkit.getScheduler().runTask(NFTWorlds.getInstance(), () -> {
+                new PeerToPeerPayEvent(
+                        Bukkit.getOfflinePlayer(peerToPeerPayment.getTo()),
+                        Bukkit.getOfflinePlayer(peerToPeerPayment.getFrom()),
+                        received,
+                        peerToPeerPayment.getReason(),
+                        ref
+                ).callEvent(); //TODO: Test if works for offline players
+            });
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void paymentListener_handleTransferEvent(Log log) {
-        NFTWorlds plugin = NFTWorlds.getInstance();
+        final NFTWorlds plugin = NFTWorlds.getInstance();
 
-        if (debug) plugin.getLogger().log(Level.INFO, "Payment detected");
+        final List<String> topics = log.getTopics();
+        final TypeReference<Address> addressTypeReference = new TypeReference<>() {};
+        final Address fromAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(1), addressTypeReference);
+        final Address toAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(2), addressTypeReference);
 
-        List<String> topics = log.getTopics();
-        List<Type> data = FunctionReturnDecoder.decode(log.getData(), PolygonWRLDToken.TRANSFER_EVENT.getNonIndexedParameters());
-        TypeReference<Address> addressTypeReference = new TypeReference<>() {};
+        // If this transaction is not related to OUR server, ignore it.
+        if (!this.isServerAddress(fromAddress, toAddress))
+            return;
 
-        Address fromAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(1), addressTypeReference);
-        Address toAddress = (Address) FunctionReturnDecoder.decodeIndexedValue(topics.get(2), addressTypeReference);
-        Uint256 amount = (Uint256) data.get(0);
-        double received = Convert.fromWei(amount.getValue().toString(), Convert.Unit.ETHER).doubleValue();
+        final List<Type> data = FunctionReturnDecoder.decode(log.getData(), PolygonWRLDToken.TRANSFER_EVENT.getNonIndexedParameters());
+        final Uint256 amount = (Uint256) data.get(0);
+        final double received = Convert.fromWei(amount.getValue().toString(), Convert.Unit.ETHER).doubleValue();
 
-        if (debug)
-            plugin.getLogger().log(Level.INFO, "Transfer of " + received + " $WRLD from " + fromAddress.toString() + " to " + toAddress.toString() + " . Updating balances.");
+        LogUtil.log("Transfer of %s $WRLD from %s to %s.", received, fromAddress, toAddress);
 
-        Wallet fromWallet = plugin.getWallet(fromAddress.toString());
-        if (fromWallet != null) {
+        final Wallet fromWallet = plugin.getWallet(fromAddress.toString());
+        if (Objects.nonNull(fromWallet)) {
             fromWallet.setPolygonWRLDBalance(fromWallet.getPolygonWRLDBalance() - received);
         }
 
-        Wallet toWallet = plugin.getWallet(toAddress.toString());
-        if (toWallet != null) {
+        final Wallet toWallet = plugin.getWallet(toAddress.toString());
+        if (Objects.nonNull(toWallet)) {
             toWallet.setPolygonWRLDBalance(toWallet.getPolygonWRLDBalance() + received);
         }
     }
 
+    private boolean isServerAddress(Address from, Address to) {
+        final String serverAddress = NFTWorlds.getInstance().getNftConfig().getServerWalletAddress();
+        return (Objects.nonNull(from) && from.toString().equals(serverAddress)) ||
+                (Objects.nonNull(to) && to.toString().equalsIgnoreCase(serverAddress));
+    }
 }
