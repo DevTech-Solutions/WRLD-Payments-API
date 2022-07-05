@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NFTWorlds extends JavaPlugin {
-    private static NFTWorlds plugin;
+    private static NFTWorlds PLUGIN;
 
     @Getter private Config nftConfig;
 
@@ -40,16 +40,16 @@ public class NFTWorlds extends JavaPlugin {
     private final Map<String, Wallet> wallets = new CaseInsensitiveConcurrentMap<>();
 
     public void onEnable() {
-        plugin = this;
+        NFTWorlds.PLUGIN = this;
 
-        (nftConfig = new Config()).registerConfig();
-        (langConfig = new LangConfig()).registerConfig();
+        (this.nftConfig = new Config()).registerConfig();
+        (this.langConfig = new LangConfig()).registerConfig();
 
-        polygonRPC = new Polygon();
-        ethereumRPC = new Ethereum();
+        this.polygonRPC = new Polygon();
+        this.ethereumRPC = new Ethereum();
 
-        players = new Players();
-        wrld = new WRLD();
+        this.players = new Players();
+        this.wrld = new WRLD();
 
         WalletGUI.setup();
 
@@ -66,8 +66,13 @@ public class NFTWorlds extends JavaPlugin {
     }
 
     public void onDisable() {
-        plugin = null;
+        NFTWorlds.PLUGIN = null;
+
         getServer().getConsoleSender().sendMessage("NFTWorlds WRLD API has been disabled");
+
+        // Dispose of the subscriptions!
+        if (Objects.nonNull(this.wrld.getFlowableSubscription())) this.wrld.getFlowableSubscription().dispose();
+        if (Objects.nonNull(this.players.getFlowableSubscription())) this.players.getFlowableSubscription().dispose();
     }
 
     public void registerEvents() {
@@ -108,6 +113,6 @@ public class NFTWorlds extends JavaPlugin {
     }
 
     public static NFTWorlds getInstance() {
-        return plugin;
+        return NFTWorlds.PLUGIN;
     }
 }

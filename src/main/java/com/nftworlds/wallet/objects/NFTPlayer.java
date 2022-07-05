@@ -5,6 +5,7 @@ import com.nftworlds.wallet.contracts.nftworlds.Players;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -151,7 +152,10 @@ public class NFTPlayer {
      * @param uuid The UUID of the player you want to get the NFTPlayer object of.
      * @return The NFTPlayer object associated with the UUID.
      */
-    public static NFTPlayer getByUUID(UUID uuid) {
+    public static NFTPlayer getByUUID(@UnknownNullability UUID uuid) {
+        if (Objects.isNull(uuid))
+            return null;
+
         return players.get(uuid);
     }
 

@@ -13,6 +13,7 @@ import com.nftworlds.wallet.objects.payments.PaymentRequest;
 import com.nftworlds.wallet.objects.payments.PeerToPeerPayment;
 import com.nftworlds.wallet.rpcs.Ethereum;
 import com.nftworlds.wallet.rpcs.Polygon;
+import io.reactivex.disposables.Disposable;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.web3j.abi.FunctionReturnDecoder;
@@ -35,12 +36,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class WRLD {
+    public static final String TRANSFER_EVENT_TOPIC = Hash.sha3String("Transfer(address,address,uint256)");
+    public static final String TRANSFER_REF_EVENT_TOPIC = Hash.sha3String("TransferRef(address,address,uint256,uint256)");
+
     private final EthereumWRLDToken ethereumWRLDTokenContract;
     private final PolygonWRLDToken polygonWRLDTokenContract;
     private final boolean debug;
 
-    public static final String TRANSFER_EVENT_TOPIC = Hash.sha3String("Transfer(address,address,uint256)");
-    public static final String TRANSFER_REF_EVENT_TOPIC = Hash.sha3String("TransferRef(address,address,uint256,uint256)");
+    private Disposable flowableSubscription;
 
     public WRLD() {
         NFTWorlds nftWorlds = NFTWorlds.getInstance();
@@ -73,7 +76,16 @@ public class WRLD {
                 new StaticGasProvider(BigInteger.valueOf(90_100_000_000L), BigInteger.valueOf(9_000_000))
         );
 
-        startPolygonPaymentListener();
+        this.startPolygonPaymentListener();
+    }
+
+    /**
+     * > This function returns a `Disposable` object that can be used to unsubscribe from the `Flowable` object
+     *
+     * @return A disposable object that can be used to unsubscribe from the flowable.
+     */
+    public @NotNull Disposable getFlowableSubscription() {
+        return flowableSubscription;
     }
 
     /**
@@ -150,18 +162,18 @@ public class WRLD {
                 this.polygonWRLDTokenContract.getContractAddress()
         ).addOptionalTopics(WRLD.TRANSFER_REF_EVENT_TOPIC, WRLD.TRANSFER_EVENT_TOPIC);
 
-        NFTWorlds.getInstance().getPolygonRPC().getPolygonWeb3j().ethLogFlowable(transferFilter).subscribe(log -> {
-                    String eventHash = log.getTopics().get(0);
+        this.flowableSubscription = NFTWorlds.getInstance().getPolygonRPC().getPolygonWeb3j().ethLogFlowable(transferFilter)
+                .subscribe(log -> {
+                            String eventHash = log.getTopics().get(0);
 
-                    if (eventHash.equals(TRANSFER_REF_EVENT_TOPIC)) {
-                        this.paymentListener_handleTransferRefEvent(log);
-                    } else if (eventHash.equals(TRANSFER_EVENT_TOPIC)) {
-                        this.paymentListener_handleTransferEvent(log);
-                    }
-                },
-                error -> {
-                    error.printStackTrace();
-                });
+                            if (eventHash.equals(TRANSFER_REF_EVENT_TOPIC)) {
+                                this.paymentListener_handleTransferRefEvent(log);
+                            } else if (eventHash.equals(TRANSFER_EVENT_TOPIC)) {
+                                this.paymentListener_handleTransferEvent(log);
+                            }
+                        },
+                        Throwable::printStackTrace
+                );
     }
 
     private void paymentListener_handleTransferRefEvent(Log log) {
@@ -199,7 +211,7 @@ public class WRLD {
                         @Override
                         public void run() {
                             new PlayerTransactEvent(
-                                    Bukkit.getPlayer(paymentRequest.getAssociatedPlayer()),
+                                    Bukkit.getPlayer(paymentRequest.getAssociatedPlayer()), // <-- derp.. only works for online players
                                     received,
                                     paymentRequest.getReason(),
                                     ref,
