@@ -6,7 +6,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 
-public class Ethereum {
+import java.util.Objects;
+
+public class Ethereum implements RPC {
     private final Web3j ethereumWeb3j;
     private final DefaultGasProvider gasProvider;
 
@@ -33,5 +35,12 @@ public class Ethereum {
      */
     public @NotNull DefaultGasProvider getGasProvider() {
         return gasProvider;
+    }
+
+    @Override
+    public void shutdown() {
+        if (Objects.nonNull(this.ethereumWeb3j)) {
+            this.ethereumWeb3j.shutdown();
+        }
     }
 }

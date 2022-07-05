@@ -12,6 +12,7 @@ import com.nftworlds.wallet.objects.NFTPlayer;
 import com.nftworlds.wallet.objects.Wallet;
 import com.nftworlds.wallet.rpcs.Ethereum;
 import com.nftworlds.wallet.rpcs.Polygon;
+import io.reactivex.disposables.Disposable;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -70,9 +71,20 @@ public class NFTWorlds extends JavaPlugin {
 
         getServer().getConsoleSender().sendMessage("NFTWorlds WRLD API has been disabled");
 
-        // Dispose of the subscriptions!
-        if (Objects.nonNull(this.wrld.getFlowableSubscription())) this.wrld.getFlowableSubscription().dispose();
-        if (Objects.nonNull(this.players.getFlowableSubscription())) this.players.getFlowableSubscription().dispose();
+        if (Objects.nonNull(this.polygonRPC))
+            this.polygonRPC.shutdown();
+
+        if (Objects.nonNull(this.ethereumRPC))
+            this.ethereumRPC.shutdown();
+
+        if (Objects.nonNull(this.wrld)) {
+            final Disposable flowableSubscription = this.wrld.getFlowableSubscription();
+            flowableSubscription.dispose();
+        }
+        if (Objects.nonNull(this.players)) {
+            final Disposable flowableSubscription = this.players.getFlowableSubscription();
+            flowableSubscription.dispose();
+        }
     }
 
     public void registerEvents() {
