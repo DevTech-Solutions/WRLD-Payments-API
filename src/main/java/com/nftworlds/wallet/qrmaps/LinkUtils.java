@@ -29,14 +29,16 @@ public final class LinkUtils {
     public static @NotNull String shortenURL(@NotNull String url) throws IOException, InterruptedException {
         // TODO: Move bit.ly API key to config
         final String requestBody = new JSONObject().put("long_url", url).toString();
+
         final HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer 25eb1a884375f6f92d9773ad9e7a3f30d26a6551")
                 .uri(URI.create("https://api-ssl.bitly.com/v4/shorten"))
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
 
-        final JSONObject response = new JSONObject(HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body());
-        return response.getString("link");
+        final HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        final JSONObject jsonObject = new JSONObject(response.body());
+        return jsonObject.getString("link");
     }
 
     /**
@@ -69,6 +71,8 @@ public final class LinkUtils {
                 }
             }
         }
+
+        bitMatrix.clear();
 
         return image;
     }
